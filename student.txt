@@ -1,0 +1,128 @@
+#include<iostream>
+#include<cstring>
+#include<cctype>
+using namespace std;
+class person//定义person类
+{
+friend void contrast(person (&a)[10]);//友元声明,该函数对person类数组按成绩进行排序
+friend void degree(const person &);//友元声明，该函数对学生成绩进行评定
+public:
+person(char*s="0",char g='0',int a=0,float n=0):name(new char[strlen(s)+1]),sex(g),age(a),score(n),num()
+{//带默认实参的构造函数，初始化列表中为name成员动态分配堆中空间
+strcpy(name,s);
+set_no();//见该函数注释
+}
+person(const person &p):name(new char[strlen(p.name)+1]),sex(p.sex),age(p.age),score(p.score),num()
+{//复制构造函数，初始化列表中为name成员动态分配堆中空间
+strcpy(name,p.name);
+copy_no(p);//见该函数注释
+}
+/*具有删除堆中空间功能的析构寒素，因为每个对象的name成员都创建了堆
+中空间，析构掉该对象时必须先删除对应的堆中空间，否则会产生内存泄露*/
+~person(){delete [] name;name=NULL;}
+void dispaly();//打印对象数据成员的函数
+void set_item(char *s="0",char g='0',int a=0,float n=0);//设置除学号外其它数据成员的函数
+void copy_item(const person &);//复制对象的成员函数
+protected:
+void set_no();//以static成员start对代表学号的num成员进行"赋值"
+void copy_no(const person &);//"复制"num成员
+char *name;//用string多好，题目真恶心
+char sex;//单个字符能表达性别么？
+int num[10];//
+float score;
+int age;
+static int start;//用来对学号"赋值"的静态整型成员
+};
+int person::start(1300000001);//对该静态整型成员定义，13表示2013年尾数1表示学号从1起始
+void person::dispaly()
+{
+cout<<name<<"\t"<<sex<<"\t"<<age<<"\t"<<score<<"\t"<<flush;
+for(size_t n(0);n!=10;++n)
+{
+cout<<num[n]<<flush;
+}
+cout<<endl;
+}
+void person::set_item(char *s,char g,int a,float n)
+{
+delete [] name;
+name=NULL;
+name=new char[strlen(s)+1];
+//构造函数中对name的堆中空间已经分配了，因为空间分配后
+//不可修该，此处先删除原有空间再重新开辟合适大小的空间
+strcpy(name,s);
+sex=g;
+score=n;
+age=a;
+}
+void person::copy_item(const person &p)
+{ delete [] name;
+name=NULL;
+name=new char[strlen(p.name)+1];
+//和上面一样
+strcpy(name,p.name);
+copy_no(p);
+sex=p.sex;
+score=p.score;
+age=p.age;
+}
+void person::set_no()
+{
+int L(1000000000),Y=start;
+for(size_t t(0);t!=9;++t)
+{num[t]=Y/L;Y-=num[t]*L;L/=10;}
+num[9]=start%10;
+++start;//每创建一个对象都都自加，保证学号的连续性和唯一性
+}
+void person::copy_no(const person &p)
+{
+for(size_t t(0);t!=10;++t){num[t]=p.num[t];}
+}
+void contrast(person (&a)[10])
+{
+for(size_t n(0);n!=9;++n)
+{
+for(size_t z(0);z!=9;++z)
+{
+if(a[z].score<a[z+1].score)
+{
+person x(a[z+1]);
+a[z+1].copy_item(a[z]);
+a[z].copy_item(x);
+}
+}
+}
+}
+void degree(const person &a)
+{
+if(a.score>=90){cout<<a.name<<"\t"<<"优秀"<<endl;}
+else if(a.score>=80){cout<<a.name<<"\t"<<"良好"<<endl;}
+else if(a.score>=70){cout<<a.name<<"\t"<<"中等"<<endl;}
+else if(a.score>=60){cout<<a.name<<"\t"<<"及格"<<endl;}
+else{cout<<a.name<<"\t"<<"不及格"<<endl;}
+}
+int main()
+{
+person a;
+a.set_item("李一",'m',18,67);//勉为其难的用下set_item函数，要不没机会了
+person b("胡美丽",'w',17,80);
+person c("Lilei",'m',20,87);
+person d("Luci",'w',16,100);
+person e("Kate",'w',17,98.5);
+person f("Richard",'m',16,77);
+person g("张林",'m',22,95);
+person h("Rose",'w',19,55.5);
+person i("九爷",'m',18,60);
+person j("Worden",'w',23,66);
+person students[]={a,b,c,d,e,f,g,h,i,j};
+cout<<"学生成绩单："<<endl;
+cout<<"姓名"<<"\t"<<"性别"<<"\t"<<"年龄"<<"\t"<<"成绩"<<"\t"<<"学号"<<endl;
+for(size_t n(0);n!=10;++n){students[n].dispaly();}
+contrast(students);
+cout<<"学生成绩由高到低排序："<<endl;
+for(size_t n(0);n!=10;++n){students[n].dispaly();}
+cout<<"学生成绩评价："<<endl;
+for(size_t n(0);n!=10;++n){degree(students[n]);}
+system("pause");
+return 0;
+}

@@ -1,0 +1,29 @@
+// project2.idl : project2.exe 的类型库源
+
+// 此文件将由 MIDL 编译器处理以产生
+// 类型库(project2.tlb)。
+
+[ uuid(30D2B85E-9B1C-4CB3-BA40-122C6BAAE60B), version(1.0) ]
+library project2
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	//  Cproject2Doc 的主调度接口
+	
+	[ uuid(138BD86D-7208-4D55-92AF-7D388F8DB8CC) ]
+	dispinterface Iproject2
+	{
+		properties:
+			
+		methods:
+	};
+
+	//  Cproject2Doc 的类信息
+	
+	[ uuid(4E19AEBB-D321-4A0B-B5B7-B9BE7E723ED4) ]
+	coclass project2
+	{
+		[default] dispinterface Iproject2;
+	};
+};
