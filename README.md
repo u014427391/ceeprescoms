@@ -1,2 +1,2 @@
 # RecordedDataInfoManagementSystem
-高考预录数据信息管理系统
+MFC做界面的高考预录数据信息管理系统
